@@ -3,7 +3,7 @@
 // Created By        - admin@make2explore.com
 // Version - 1.0
 // Software Platform - C++, Arduino Libraries
-// Hardware Platform - Arduino Uno R3, DS50 Fingerprint Sensor, 4-channel Relay module, Solenoid Lock
+// Hardware Platform - Arduino Uno R3, DY50 Fingerprint Sensor (FPM10A clone), 4-channel Relay module, Solenoid Lock
 //                     0.96' OLED display.
 // Sensors Used      - DS50 Fingerprint Sensor
 // ---------------------------------------------------------------------------------------------------
