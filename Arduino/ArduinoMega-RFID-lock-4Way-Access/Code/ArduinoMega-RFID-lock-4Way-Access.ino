@@ -3,8 +3,8 @@
 // Created By        - admin@make2explore.com
 // Version - 1.0
 // Software Platform - C/C++, Arduino IDE, Libraries
-// Hardware Platform - Arduino Nano, 16x2LCD display, RC522 RFID Reader module, HC-05 Blutooth module, 
-//                     4x4 kepad, Solenoid Lock, Relay Module etc.                 
+// Hardware Platform - Arduino Nano, 16x2LCD display, RC522 RFID Reader module, HC-05 Bluetooth module, 
+//                     4x4 keypad, Solenoid Lock, Relay Module etc.                 
 // Sensors Used      - RC522 RFID Reader, GT511C3 Fingerprint Sensor
 // Last Modified     - 24/02/2020
 // -------------------------------------------------------------------------------------------------------//
