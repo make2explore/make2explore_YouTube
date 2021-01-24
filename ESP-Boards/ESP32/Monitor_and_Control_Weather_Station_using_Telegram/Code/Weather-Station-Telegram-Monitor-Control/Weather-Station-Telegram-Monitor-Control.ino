@@ -5,7 +5,7 @@
 // Software          - C/C++, Arduino IDE, Libraries
 // Hardware          - NODEMCU ESP32s, BMP280 Sensor, DHT22 Sensor, 4Channel Relay Module(5V)                
 // Sensors Used      - BMP280 Atm Pressure Sensor, DHT22 Temperature Humidity Sensor
-// Last Modified     - 16/01/2020 21:44:00
+// Last Modified     - 16/01/2021 21:44:00
 // -------------------------------------------------------------------------------------------------------//
 
 #include <WiFi.h>
@@ -205,14 +205,14 @@ void handleNewMessages(int numNewMessages) {
 void setup() {
   Serial.begin(115200);
 
-  pinMode(Relay1, OUTPUT);
+  pinMode(Relay1, OUTPUT);             //define Relay pins as Digital OUT
   pinMode(Relay2, OUTPUT);
   pinMode(Relay3, OUTPUT);
   pinMode(Relay4, OUTPUT);
 
-  digitalWrite(Relay1, Relay1State);
-  digitalWrite(Relay2, Relay2State);
-  digitalWrite(Relay3, Relay3State);
+  digitalWrite(Relay1, Relay1State);   // Relay operate at inverted logic, so When RelayPin is "HIGH" Relay is Off
+  digitalWrite(Relay2, Relay2State);   // When "LOW" Relay is On
+  digitalWrite(Relay3, Relay3State);   // Here initially we make all relays Off
   digitalWrite(Relay4, Relay4State);
 
   // Init BMP280 sensor
