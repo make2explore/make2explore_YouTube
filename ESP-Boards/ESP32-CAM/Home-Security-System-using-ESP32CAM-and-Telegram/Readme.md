@@ -10,7 +10,7 @@
 
 🚩   ESP32CAM will interact with the Telegram bot to receive and handle the messages, and send responses. In this project you’ll learn how to use Telegram to send messages to your bot to (Arm/Disarm) the Security System features from anywhere (you just need Telegram and access to the internet).
 
-
+<br  />
 
 📜 Parts Required  
 
@@ -25,7 +25,7 @@
 9. FT232RL FTDI USB to UART Module
 9. Batteries - 7.4V LiPo 
 
-
+<br  />
 
 ▶️ YouTube Video Links -  
 
@@ -39,7 +39,7 @@ Part III      -  Programming - How to Upload Code in ESP32CAM?     https://youtu
 
 Part IV       -  Demo                                              https://youtu.be/wRI1mhyIHKY  
   
-  
+<br  />
 
 
 Important Notes  
