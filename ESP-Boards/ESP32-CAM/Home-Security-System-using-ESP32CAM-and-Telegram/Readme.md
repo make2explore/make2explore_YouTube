@@ -1,6 +1,6 @@
-🔴 Project Name : Home-Security-System-using-ESP32CAM-and-Telegram
+🔴 Project Name : Home-Security-System-using-ESP32CAM-and-Telegram  
 
-📷 About Video -
+📷 About Video -  
 
 🚩   In this project we’ll build a Home Security System using ESP32 CAM Which will notify us on Telegram App about any Intruder trying to break in our house by capturing and sending his photo to us. For that we’ve used PIR motion Sensors and Magnetic Door Sensors.
 
@@ -12,7 +12,7 @@
 
 
 
-📜 Parts Required
+📜 Parts Required  
 
 1. ESP32CAM Development Board
 2. MQ6 Gas/Smoke Sensor Module
@@ -27,7 +27,7 @@
 
 
 
-▶️ YouTube Video Links - 
+▶️ YouTube Video Links -  
 
 This Project is explained in Four parts (Videos)
 
@@ -37,10 +37,12 @@ Part II       -  Software, Code and Apps                           https://youtu
 
 Part III      -  Programming - How to Upload Code in ESP32CAM?     https://youtu.be/YtACC-TmC5U​
 
-Part IV       -  Demo                                              https://youtu.be/wRI1mhyIHKY
+Part IV       -  Demo                                              https://youtu.be/wRI1mhyIHKY  
+  
+  
 
 
-Important Notes
+Important Notes  
 
 -- Versions of Libraries may get outdated with time.
 
