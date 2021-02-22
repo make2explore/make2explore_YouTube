@@ -29,17 +29,17 @@
 
 <br  />
 
-▶️ YouTube Video Links -  
+🌐 YouTube Video Links -  
 
 This Project is explained in Four parts (Videos)
 
-Part I        -  Introduction, Theory and Hardware                 https://youtu.be/8_w8BkEFNRY​
+Part I        -  Introduction, Theory and Hardware               ▶️  [https://youtu.be/8_w8BkEFNRY​]  
 
-Part II       -  Software, Code and Apps                           https://youtu.be/yiu5tsOd4pk​
+Part II       -  Software, Code and Apps                         ▶️  [https://youtu.be/yiu5tsOd4pk​]  
 
-Part III      -  Programming - How to Upload Code in ESP32CAM?     https://youtu.be/YtACC-TmC5U​
+Part III      -  Programming - How to Upload Code in ESP32CAM?    ▶️  [https://youtu.be/YtACC-TmC5U​]  
 
-Part IV       -  Demo                                              https://youtu.be/wRI1mhyIHKY  
+Part IV       -  Demo                                            ▶️  [https://youtu.be/wRI1mhyIHKY]  
   
 <br  />
 
