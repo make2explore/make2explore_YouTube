@@ -1,4 +1,4 @@
-Project Name : Home-Security-System-using-ESP32CAM-and-Telegram
+🔴 Project Name : Home-Security-System-using-ESP32CAM-and-Telegram
 
 📷 About Video -
 
@@ -40,7 +40,7 @@ Part III      -  Programming - How to Upload Code in ESP32CAM?     https://youtu
 Part IV       -  Demo                                              https://youtu.be/wRI1mhyIHKY
 
 
-
+Important Notes
 
 -- Versions of Libraries may get outdated with time.
 
