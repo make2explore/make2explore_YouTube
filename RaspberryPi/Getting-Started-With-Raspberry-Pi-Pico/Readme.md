@@ -3,10 +3,10 @@
 
 This Tutorial is explained in Four parts (Videos)
 
-Part I        -  Introduction and Features            https://youtu.be/lppgBXZHsFk  
-Part II       -  Unboxing and Hardware Setup          https://youtu.be/doWmcO0TGKU  
-Part III      -  Software Setup                       https://youtu.be/BQ09zRzc-DA  
-Part IV       -  Programming - LED Blinking           https://youtu.be/rSlCiqDg3_M  
+Part I        -  Introduction and Features.     ▶️ https://youtu.be/lppgBXZHsFk  
+Part II       -  Unboxing and Hardware Setup.     ▶️ https://youtu.be/doWmcO0TGKU  
+Part III      -  Software Setup.     ▶️ https://youtu.be/BQ09zRzc-DA  
+Part IV       -  Programming - LED Blinking.     ▶️ https://youtu.be/rSlCiqDg3_M  
 
 <br />
 
@@ -22,9 +22,9 @@ Part IV       -  Programming - LED Blinking           https://youtu.be/rSlCiqDg3
 
 🌐 VIP links -  
 
-▶️ https://www.raspberrypi.org/documentation
-▶️ https://www.raspberrypi.org/documentation/rp2040/getting-started/#board-specifications
-▶️ https://micropython.org/download/rp2-pico/
+▶️ https://www.raspberrypi.org/documentation  
+▶️ https://www.raspberrypi.org/documentation/rp2040/getting-started/#board-specifications  
+▶️ https://micropython.org/download/rp2-pico/  
 
 To Download Thonny IDE visit
 
