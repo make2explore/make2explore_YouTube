@@ -3,7 +3,7 @@
 
 This Tutorial is explained in Four parts (Videos)
 
-Part I        -  Introduction and Features. --------- ▶️ https://youtu.be/lppgBXZHsFk  
+Part I        -  Introduction and Features. ------------ ▶️ https://youtu.be/lppgBXZHsFk  
 Part II       -  Unboxing and Hardware Setup. ------- ▶️ https://youtu.be/doWmcO0TGKU  
 Part III      -  Software Setup. ----------------------- ▶️ https://youtu.be/BQ09zRzc-DA  
 Part IV       -  Programming - LED Blinking. --------- ▶️ https://youtu.be/rSlCiqDg3_M  
