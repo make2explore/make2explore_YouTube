@@ -2,7 +2,7 @@
 
 <br  />
 
-📷 About Video -  
+📷 About Project -  
 
 🚩   In this project we’ll build a Home Security System using ESP32 CAM Which will notify us on Telegram App about any Intruder trying to break in our house by capturing and sending his photo to us. For that we’ve used PIR motion Sensors and Magnetic Door Sensors.
 
@@ -50,6 +50,6 @@ Important Notes
 
 -- Download your libraries from their updated source repositories, to avoid any errors.
 
--- This vesrion of code worked correctly with the libraries given in repo [At the time of upoad].
+-- This version of code worked correctly with the libraries given in repo [At the time of upoad].
 
 -- Project source Code may needs to be changed if there big changes occured in library source codes.
