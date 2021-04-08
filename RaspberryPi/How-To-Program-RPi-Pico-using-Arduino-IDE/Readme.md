@@ -1,6 +1,6 @@
 📕 How to Program Raspberry Pi Pico using Arduino IDE <br />
 
-
+<br />
 This Tutorial is explained in Two parts (Videos)
 
 Part I        -  How to Add/Install Raspberry Pi Pico Board core into an Arduino IDE. -------------- ▶️ https://youtu.be/_zG6Pgfg3bI  
@@ -10,12 +10,18 @@ Part II       -  How to Program Raspberry Pi Pico using Arduino IDE. ------- ▶
 
 📜 Parts Required
 
-1. Raspberry Pi Pico Development Board  
+Raspberry Pi Pico Development Board  
 
 <br />
 
 🌐 VIP links -  
 
+Open up the Arduino IDE and go to File->Preferences.  
+
+In the dialog that pops up, enter the following URL in the "Additional Boards Manager URLs" field:  
+
+https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json  
+<br />
 ▶️ https://github.com/earlephilhower/arduino-pico  
 ▶️ https://www.tomshardware.com/how-to/program-raspberry-pi-pico-with-arduino-ide   
 ▶️ https://www.raspberrypi.org/documentation  
