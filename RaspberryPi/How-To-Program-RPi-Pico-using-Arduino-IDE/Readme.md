@@ -13,7 +13,7 @@ Part II       -  How to Program Raspberry Pi Pico using Arduino IDE. ------- ▶
 Raspberry Pi Pico Development Board  
 
 <br />
-====================================================================================================================================
+============================================================================================  
 <br />
 Open up the Arduino IDE and go to File->Preferences.  
 
@@ -21,7 +21,7 @@ In the dialog that pops up, enter the following URL in the "Additional Boards Ma
 
 https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json  
 
-====================================================================================================================================  
+============================================================================================  
 
 🌐 VIP links -  
 
