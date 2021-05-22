@@ -4,17 +4,17 @@
 
 1. i2c_Scanner Sketch will scan for connected I2C devices to Arduino/ESP/ any Arduino core dev Boards.  
 
-2. Sketch will then display the (i2c) address of connected devices
+2. Sketch will then display the (i2c) address of connected devices on serial monitor
 
 <br  />
 
-🚩 Known Issues-  ["Could not find a valid BMP280 sensor, check wiring!"]  
+🚩 Known Issues-  [*Could not find a valid BMP280 sensor, check wiring!*]  
 
 This issue is of I2C connection between ESP32 TTGO LoRa and BMP280, Please follow the steps below to troubleshoot this problem
 
 1. First check wiring (SCA, SDA lines) for correct connection as per circuit diagram given in GitHub Schematics folder.
 2. Then find out the *I2C address* of your BMP280 sensor using "i2c Scanner sketch" which is also given in GitHub Code Folder. 
-3. After that in LoRa_Sender_Web_Server.ino sketch go to Line 123 which looks like following
+3. After that in "LoRa_Sender_Web_Server.ino" sketch go to Line 123 which looks like following
   
 if (!bme.begin(0x76)) {  
 
