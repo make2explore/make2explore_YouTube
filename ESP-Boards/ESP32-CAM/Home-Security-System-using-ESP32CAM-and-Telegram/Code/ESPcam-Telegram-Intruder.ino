@@ -192,8 +192,7 @@ void loop(){
   if(!door1stat && doorLockMonitor){
     bot.sendMessage(chatId, "Alert - Door1 Opened !!", "");
     Serial.println("Door1 Opened");
-    door1stat = true
-    rue;
+    door1stat = true;
   }
 
   // If Door 2 is got Opened
