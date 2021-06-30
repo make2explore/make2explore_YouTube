@@ -50,6 +50,6 @@ Important Notes
 
 -- Download your libraries from their updated source repositories, to avoid any errors.
 
--- This version of code worked correctly with the libraries given in repo [At the time of upoad].
+-- This version of code worked correctly with the libraries given in repo [At the time of upload].
 
 -- Project source Code may needs to be changed if there big changes occured in library source codes.
