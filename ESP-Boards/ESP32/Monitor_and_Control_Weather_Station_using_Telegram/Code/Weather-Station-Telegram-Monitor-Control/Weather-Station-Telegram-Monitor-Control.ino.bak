@@ -40,7 +40,6 @@ const char* password = "XXXXXXX";
 
 WiFiClientSecure client;
 UniversalTelegramBot bot(BOTtoken, client);
-secured_client.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
 
 //Checks for new messages every 1 second.
 int botRequestDelay = 1000;
