@@ -1,4 +1,4 @@
-# Adafruit_SSD1306 [![Build Status](https://travis-ci.org/adafruit/Adafruit_SSD1306.svg?branch=master)](https://travis-ci.org/adafruit/Adafruit_SSD1306)
+# Adafruit_SSD1306 [![Build Status](https://github.com/adafruit/Adafruit_SSD1306/workflows/Arduino%20Library%20CI/badge.svg)](https://github.com/adafruit/Adafruit_SSD1306/actions)[![Documentation](https://github.com/adafruit/ci-arduino/blob/master/assets/doxygen_badge.svg)](http://adafruit.github.io/Adafruit_SSD1306/html/index.html)
 
 This is a library for our Monochrome OLEDs based on SSD1306 drivers
 
@@ -19,6 +19,10 @@ Preferred installation method is to use the Arduino IDE Library Manager. To down
 You will also have to install the **Adafruit GFX library** which provides graphics primitves such as lines, circles, text, etc. This also can be found in the Arduino Library Manager, or you can get the source from https://github.com/adafruit/Adafruit-GFX-Library
 
 ## Changes
+Pull Request:
+   (September 2019) 
+   * new #defines for SSD1306_BLACK, SSD1306_WHITE and SSD1306_INVERSE that match existing #define naming scheme and won't conflict with common color names
+   * old #defines for BLACK, WHITE and INVERSE kept for backwards compat (opt-out with #define NO_ADAFRUIT_SSD1306_COLOR_COMPATIBILITY)
 
 Version 1.2 (November 2018) introduces some significant changes:
 
@@ -42,6 +46,7 @@ ATSAM21D    |      X     |            |          |
 Intel Curie |      X     |            |          |
 WICED       |      X     |            |          | No hardware SPI - bitbang only
 ATtiny85    |            |      X     |          |
+Particle    |      X     |            |          |
 
   * ATmega328 : Arduino UNO, Adafruit Pro Trinket, Adafruit Metro 328, Adafruit Metro Mini
   * ATmega32u4 : Arduino Leonardo, Arduino Micro, Arduino Yun, Teensy 2.0, Adafruit Flora, Bluefruit Micro
@@ -50,5 +55,6 @@ ATtiny85    |            |      X     |          |
   * ATSAM3X8E : Arduino Due
   * ATSAM21D : Arduino Zero, M0 Pro, Adafruit Metro Express, Feather M0
   * ATtiny85 : Adafruit Gemma, Arduino Gemma, Adafruit Trinket
+  * Particle: Particle Argon
 
 <!-- END COMPATIBILITY TABLE -->
