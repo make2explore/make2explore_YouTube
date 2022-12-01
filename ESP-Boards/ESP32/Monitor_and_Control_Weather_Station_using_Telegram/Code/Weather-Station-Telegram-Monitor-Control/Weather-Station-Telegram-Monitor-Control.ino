@@ -5,7 +5,13 @@
 // Software          - C/C++, Arduino IDE, Libraries
 // Hardware          - NODEMCU ESP32s, BMP280 Sensor, DHT22 Sensor, 4Channel Relay Module(5V)                
 // Sensors Used      - BMP280 Atm Pressure Sensor, DHT22 Temperature Humidity Sensor
-// Last Modified     - 16/01/2021 21:44:00
+// Last Modified     - 01/09/2022 21:44:00
+//
+// -- Latest Testing on  - 01/09/22  ✅
+//    - With Following Environments
+//    - ESP32 Core Version : 2.0.1
+//    - Universal Telegram Bot library  v. 1.3.0
+//    - ArduinoJson Library v. 6.15.2
 // -------------------------------------------------------------------------------------------------------//
 
 #include <WiFi.h>
@@ -40,7 +46,7 @@ const char* password = "XXXXXXX";
 
 WiFiClientSecure client;
 UniversalTelegramBot bot(BOTtoken, client);
-secured_client.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
+client.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
 
 //Checks for new messages every 1 second.
 int botRequestDelay = 1000;
