@@ -4,39 +4,45 @@
 // Version - 1.0
 // Last Modified     - 07/08/2021 15:00:00 @admin
 // Software          - C/C++, Arduino IDE, ESP32 SDK, Libraries
-// Hardware          - NodeMCU ESP32S, RC522 RFID Reader, FPM10A Fingerprint Sensor, Nextion Display, Solenoid Lock              
+// Hardware          - NodeMCU ESP32S, RC522 RFID Reader, FPM10A Fingerprint Sensor, Nextion Display, Solenoid Lock
 // Sensors Used      - RC522 RFID Reader, FPM10A Fingerprint Sensor
 // Source Repo       - github.com/make2explore
+
+// -- Latest Testing on  - 01/09/22  ✅
+//    - With Following Environments
+//    - ESP32 Core Version : 2.0.1
+//    - Universal Telegram Bot library  v. 1.3.0
+//    - ArduinoJson Library v. 6.15.2
 // -------------------------------------------------------------------------------------------------------//
 
-#include <WiFi.h>                   // include wifi related libraries
-#include <NTPClient.h>              // Required for fetching current time
-#include <HTTPClient.h>             // Required for HTTP POST/GET request, functions
-#include <UniversalTelegramBot.h>   // Telegram BOT API library
+#include <WiFi.h>                 // include wifi related libraries
+#include <NTPClient.h>            // Required for fetching current time
+#include <HTTPClient.h>           // Required for HTTP POST/GET request, functions
+#include <UniversalTelegramBot.h> // Telegram BOT API library
 
-#include <SPI.h>                    // Library required for RC522 RFID Reader
-#include <MFRC522.h>                // Library of RC522 RFID Reader
-#include "Nextion.h"                // Library of Nextion Display
-#include <Adafruit_Fingerprint.h>   // Library of Fingerprint Sensor
+#include <SPI.h>                  // Library required for RC522 RFID Reader
+#include <MFRC522.h>              // Library of RC522 RFID Reader
+#include "Nextion.h"              // Library of Nextion Display
+#include <Adafruit_Fingerprint.h> // Library of Fingerprint Sensor
 
-#define SS_PIN 21                   // SDA/SS Pin of RFID Reader
-#define RST_PIN 22                  // RESET Pin of RFID Reader
-#define LockerPin 33                // Relay driving Solenoid lock is connected to this pin (Active Low)
+#define SS_PIN 21    // SDA/SS Pin of RFID Reader
+#define RST_PIN 22   // RESET Pin of RFID Reader
+#define LockerPin 33 // Relay driving Solenoid lock is connected to this pin (Active Low)
 
 // Replace with your network credentials
-const char* ssid = "XXXXXXXXXXXXXX";
-const char* password = "XXXXXXXXXXXXX";
+const char *ssid = "XXXXXXXXXXXXXX";
+const char *password = "XXXXXXXXXXXXX";
 
 // Website Details
 // REPLACE with your Domain name and URL path or IP address with path
-const char* serverName = "http://example.com/post_data.php";
+const char *serverName = "http://example.com/post_data.php";
 
-// Keep this API Key value to be compatible with the PHP code provided in the Github. 
-// If you change the apiKeyValue value, the PHP file /post-data.php also needs to have the same key 
+// Keep this API Key value to be compatible with the PHP code provided in the Github.
+// If you change the apiKeyValue value, the PHP file /post-data.php also needs to have the same key
 String apiKeyValue = "XXXXXXXXXXX";
 
 // Initialize Telegram BOT
-#define BOTtoken "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  // your Bot Token (Got from Botfather)
+#define BOTtoken "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" // your Bot Token (Got from Botfather)
 
 // Use @myidbot or @userinfobot to find out the chat ID of an individual or a group
 // Also note that you need to click "start" on a bot before it can message you
@@ -45,26 +51,27 @@ String apiKeyValue = "XXXXXXXXXXX";
 WiFiClientSecure client;
 UniversalTelegramBot bot(BOTtoken, client);
 
-MFRC522 mfrc522(SS_PIN, RST_PIN);            // Create MFRC522 instance.
-String user="";                              // String variable For Username
-String data="";                              // String variable For PIN data from Nextion
+// client.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
+// Adding root certificate in Setup()
+
+MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance.
+String user = "";                 // String variable For Username
+String data = "";                 // String variable For PIN data from Nextion
 String branchName = "Secure Co-Op Bank";
-String userName ="";
+String userName = "";
 
 // Define NTP Client to get time
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
-
 String RealT = "";
-//Week Days
-String weekDays[7]={"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+// Week Days
+String weekDays[7] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
-//Month names
-String months[12]={"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+// Month names
+String months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-
-Adafruit_Fingerprint finger = Adafruit_Fingerprint(&Serial2);        //Fingerprint sensor is connected to Serial port 2
+Adafruit_Fingerprint finger = Adafruit_Fingerprint(&Serial2); // Fingerprint sensor is connected to Serial port 2
 
 // Prototypes of CallBack Functions
 
@@ -83,7 +90,6 @@ NexText DateTimeH = NexText(0, 2, "DateTimeH");
 */
 NexText DateTimeV = NexText(1, 2, "DateTimeV");
 NexText ValNM = NexText(0, 1, "ValNM");
-
 
 /*
  *******************************************************************
@@ -168,413 +174,449 @@ NexText DateTimeVF = NexText(9, 1, "DateTimeVF");
 */
 NexText DateTimeIF = NexText(10, 1, "DateTimeIF");
 
-
-
 void PinEPopCallback(void *ptr);
 void otpEPopCallback(void *ptr);
 
-
-// Declare a Page objects 
-NexPage Home         = NexPage(0, 0, "Home");
-NexPage ValidRFID    = NexPage(1, 0, "ValidRFID");
-NexPage InvalidRFID  = NexPage(2, 0, "InvalidRFID");
-NexPage About        = NexPage(3, 0, "About");
-NexPage PinEnter     = NexPage(4, 0, "PinEnter");
-NexPage otpEnter     = NexPage(5, 0, "otpEnter");
-NexPage Welcome      = NexPage(6, 0, "Welcome");
-NexPage Finger       = NexPage(7, 0, "Finger");
-NexPage FingerScan   = NexPage(8, 0, "FingerScan");
-NexPage ValidFinger  = NexPage(9, 0, "ValidFinger");
+// Declare a Page objects
+NexPage Home = NexPage(0, 0, "Home");
+NexPage ValidRFID = NexPage(1, 0, "ValidRFID");
+NexPage InvalidRFID = NexPage(2, 0, "InvalidRFID");
+NexPage About = NexPage(3, 0, "About");
+NexPage PinEnter = NexPage(4, 0, "PinEnter");
+NexPage otpEnter = NexPage(5, 0, "otpEnter");
+NexPage Welcome = NexPage(6, 0, "Welcome");
+NexPage Finger = NexPage(7, 0, "Finger");
+NexPage FingerScan = NexPage(8, 0, "FingerScan");
+NexPage ValidFinger = NexPage(9, 0, "ValidFinger");
 NexPage InvalidFinger = NexPage(10, 0, "InvalidFinger");
 
+char buffer[10] = {0}; // Buffer for collecting text values
 
-char buffer[10] = {0};   // Buffer for collecting text values
+// Register all objects to the touch event list.
 
-// Register all objects to the touch event list.  
-
-NexTouch *nex_listen_list[] = 
-{
-    &PinE,
-    &otpE,
-    NULL
-};
-
+NexTouch *nex_listen_list[] =
+    {
+        &PinE,
+        &otpE,
+        NULL};
 
 //************send data to the website*************
-void SendDataToWebsite(){
-  //Check WiFi connection status
+void SendDataToWebsite()
+{
+  // Check WiFi connection status
   Serial.println("Sending Data to Website");
-  if(WiFi.status()== WL_CONNECTED){
+  if (WiFi.status() == WL_CONNECTED)
+  {
     WiFiClient client;
-    HTTPClient http;    //Declare object of class HTTPClient
-    
+    HTTPClient http; // Declare object of class HTTPClient
+
     GetDateTime();
-    
+
     // Your Domain name with URL path or IP address with path
     http.begin(client, serverName);
-    
+
     // Specify content-type header
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    
+
     // Prepare your HTTP POST request data
-    String httpRequestData = "api_key=" + apiKeyValue + "&userID=" + user  + "&userName=" + userName + "&branchName=" + branchName + "";
-                          
-                          
+    String httpRequestData = "api_key=" + apiKeyValue + "&userID=" + user + "&userName=" + userName + "&branchName=" + branchName + "";
+
     Serial.print("httpRequestData: ");
     Serial.println(httpRequestData);
 
-    
     // Send HTTP POST request
     int httpResponseCode = http.POST(httpRequestData);
-    
-    
-    if (httpResponseCode>0) {
+
+    if (httpResponseCode > 0)
+    {
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
     }
-    else {
+    else
+    {
       Serial.print("Error code: ");
       Serial.println(httpResponseCode);
     }
     // Free resources
     http.end();
   }
-  else {
+  else
+  {
     Serial.println("WiFi Disconnected");
   }
 }
 //*****************send data to the website*********
 
-
-
 //  Button components pop callback functions - for PinEntry
 
 void PinEPopCallback(void *ptr)
 {
-    mfrc522.PICC_HaltA(); // Stop reading
-    String s = "";
+  mfrc522.PICC_HaltA(); // Stop reading
+  String s = "";
 
-    memset(buffer, 0, sizeof(buffer));
-    
-    PinT0.getText(buffer, sizeof(buffer));
-    s += buffer;
-    PinT1.getText(buffer, sizeof(buffer));
-    s += buffer;
-    PinT2.getText(buffer, sizeof(buffer));
-    s += buffer;
-    PinT3.getText(buffer, sizeof(buffer));
-    s += buffer;
+  memset(buffer, 0, sizeof(buffer));
 
-    Serial.print("Entered Pin = ");
-    Serial.println(s);
+  PinT0.getText(buffer, sizeof(buffer));
+  s += buffer;
+  PinT1.getText(buffer, sizeof(buffer));
+  s += buffer;
+  PinT2.getText(buffer, sizeof(buffer));
+  s += buffer;
+  PinT3.getText(buffer, sizeof(buffer));
+  s += buffer;
 
-    if (s == "1234" && user == "user1"){
-      PinDM1.setText("Entered PIN is : VALID");
-      PinDM2.setText("Now You'll Receive OTP on Telegram");
+  Serial.print("Entered Pin = ");
+  Serial.println(s);
 
-      int randNumber = random(1000, 9999);
-      data = String(randNumber);
-      String msg = "OTP for IoT Based Smart Locker -" + data + "\n";
-      msg += "valid for one Time only";
-      bot.sendMessage(CHAT_ID, msg, "");
-      //OTP for IoT Based Smart Locker - {{PARTICLE_EVENT_VALUE}} valid for one Time only
-      delay(1000);
+  if (s == "1234" && user == "user1")
+  {
+    PinDM1.setText("Entered PIN is : VALID");
+    PinDM2.setText("Now You'll Receive OTP on Telegram");
 
-      otpEnter.show();
-      GetDateTime();
-      DateTimeO.setText(RealT.c_str());
-      delay(1000);
-    }
-    else if (s == "5678" && user == "user2"){
-      PinDM1.setText("Entered PIN is : VALID");
-      PinDM2.setText("Now You'll Receive OTP on Telegram");
+    int randNumber = random(1000, 9999);
+    data = String(randNumber);
+    String msg = "OTP for IoT Based Smart Locker -" + data + "\n";
+    msg += "valid for one Time only";
+    bot.sendMessage(CHAT_ID, msg, "");
+    // OTP for IoT Based Smart Locker - {{PARTICLE_EVENT_VALUE}} valid for one Time only
+    delay(1000);
 
-      int randNumber = random(1000, 9999);
-      data = String(randNumber);
-      String msg = "OTP for IoT Based Smart Locker -" + data + "\n";
-      msg += "valid for one Time only";
-      bot.sendMessage(CHAT_ID, msg, "");
-      //Particle.publish("telegramWebhook", data, PRIVATE);
-      delay(1000);
+    otpEnter.show();
+    GetDateTime();
+    DateTimeO.setText(RealT.c_str());
+    delay(1000);
+  }
+  else if (s == "5678" && user == "user2")
+  {
+    PinDM1.setText("Entered PIN is : VALID");
+    PinDM2.setText("Now You'll Receive OTP on Telegram");
 
-      otpEnter.show();
-      GetDateTime();
-      DateTimeO.setText(RealT.c_str());
-      delay(1000);
-    }
-    else {
-      PinDM2.setText("Invalid PIN : Access Denied");
-      delay(2000);
-      printNormalModeMessage(); 
-    }
+    int randNumber = random(1000, 9999);
+    data = String(randNumber);
+    String msg = "OTP for IoT Based Smart Locker -" + data + "\n";
+    msg += "valid for one Time only";
+    bot.sendMessage(CHAT_ID, msg, "");
+    // Particle.publish("telegramWebhook", data, PRIVATE);
+    delay(1000);
+
+    otpEnter.show();
+    GetDateTime();
+    DateTimeO.setText(RealT.c_str());
+    delay(1000);
+  }
+  else
+  {
+    PinDM2.setText("Invalid PIN : Access Denied");
+    delay(2000);
+    printNormalModeMessage();
+  }
 }
 
 //  Button components pop callback functions - for otpEntry
 
-void otpEPopCallback(void *ptr){
+void otpEPopCallback(void *ptr)
+{
 
-    mfrc522.PICC_HaltA(); // Stop reading
-    String o = "";
+  mfrc522.PICC_HaltA(); // Stop reading
+  String o = "";
 
-    memset(buffer, 0, sizeof(buffer));
-    
-    otpT0.getText(buffer, sizeof(buffer));
-    o += buffer;
-    otpT1.getText(buffer, sizeof(buffer));
-    o += buffer;
-    otpT2.getText(buffer, sizeof(buffer));
-    o += buffer;
-    otpT3.getText(buffer, sizeof(buffer));
-    o += buffer;
+  memset(buffer, 0, sizeof(buffer));
 
-    
-    if (o == data && user == "user1"){
-      otpDM1.setText("Step III passed : Valid OTP");
-      otpDM2.setText("User : Access Granted");
-      delay(2000);
-      digitalWrite(LockerPin, LOW);
-      Welcome.show();
-      GetDateTime();
-      DateTimeW.setText(RealT.c_str());
-      wTxt.setText("Hello Aakash Gagan");
-      userName = "Aakash Gagan";
-      //char buf[128];
-      //snprintf(buf, sizeof(buf), "[\"%s\",\"%s\"]", "User ID : 1", "Jason"); 
-      SendDataToWebsite();
-      delay(5000);
-      digitalWrite(LockerPin, HIGH);
-      printNormalModeMessage();
-    }
-    else if (o == data && user == "user2"){
-      otpDM1.setText("Step III passed : Valid OTP");
-      otpDM2.setText("User : Access Granted");
-      delay(2000);
-      digitalWrite(LockerPin, LOW);
-      Welcome.show();
-      GetDateTime();
-      DateTimeW.setText(RealT.c_str());
-      wTxt.setText("Hello Ravi Bhaskar");
-      userName = "Ravi Bhaskar";
-      //char buf[128];
-      //snprintf(buf, sizeof(buf), "[\"%s\",\"%s\"]", "User ID : 2", "Ravi"); 
-      SendDataToWebsite();
-      delay(5000);
-      digitalWrite(LockerPin, HIGH);
-      printNormalModeMessage();
-    }
-    else {
-      otpDM1.setText("Invalid OTP : Access Denied");
-      otpDM2.setText("Try Again");
-      delay(3000);
-      printNormalModeMessage(); 
-    }
+  otpT0.getText(buffer, sizeof(buffer));
+  o += buffer;
+  otpT1.getText(buffer, sizeof(buffer));
+  o += buffer;
+  otpT2.getText(buffer, sizeof(buffer));
+  o += buffer;
+  otpT3.getText(buffer, sizeof(buffer));
+  o += buffer;
 
+  if (o == data && user == "user1")
+  {
+    otpDM1.setText("Step III passed : Valid OTP");
+    otpDM2.setText("User : Access Granted");
+    delay(2000);
+    digitalWrite(LockerPin, LOW);
+    Welcome.show();
+    GetDateTime();
+    DateTimeW.setText(RealT.c_str());
+    wTxt.setText("Hello Aakash Gagan");
+    userName = "Aakash Gagan";
+    // char buf[128];
+    // snprintf(buf, sizeof(buf), "[\"%s\",\"%s\"]", "User ID : 1", "Jason");
+    SendDataToWebsite();
+    delay(5000);
     digitalWrite(LockerPin, HIGH);
+    printNormalModeMessage();
+  }
+  else if (o == data && user == "user2")
+  {
+    otpDM1.setText("Step III passed : Valid OTP");
+    otpDM2.setText("User : Access Granted");
+    delay(2000);
+    digitalWrite(LockerPin, LOW);
+    Welcome.show();
+    GetDateTime();
+    DateTimeW.setText(RealT.c_str());
+    wTxt.setText("Hello Ravi Bhaskar");
+    userName = "Ravi Bhaskar";
+    // char buf[128];
+    // snprintf(buf, sizeof(buf), "[\"%s\",\"%s\"]", "User ID : 2", "Ravi");
+    SendDataToWebsite();
+    delay(5000);
+    digitalWrite(LockerPin, HIGH);
+    printNormalModeMessage();
+  }
+  else
+  {
+    otpDM1.setText("Invalid OTP : Access Denied");
+    otpDM2.setText("Try Again");
+    delay(3000);
+    printNormalModeMessage();
+  }
 
+  digitalWrite(LockerPin, HIGH);
 }
 
-void initRFID(){
-  SPI.begin();      // Init SPI bus
+void initRFID()
+{
+  SPI.begin();        // Init SPI bus
   mfrc522.PCD_Init(); // Init MFRC522 card
 }
 
+void initFingerSensor()
+{
 
-void initFingerSensor(){
-  
   // set the data rate for the sensor serial port
   finger.begin(57600);
   delay(5);
-  if (finger.verifyPassword()) {
+  if (finger.verifyPassword())
+  {
     Serial.println("Found fingerprint sensor!");
-  } else {
+  }
+  else
+  {
     Serial.println("Did not find fingerprint sensor :(");
-    while (1) { delay(1); }
+    while (1)
+    {
+      delay(1);
+    }
 
-  finger.getTemplateCount();
+    finger.getTemplateCount();
 
-  if (finger.templateCount == 0) {
-    Serial.print("Sensor doesn't contain any fingerprint data. Please run the 'enroll' example.");
+    if (finger.templateCount == 0)
+    {
+      Serial.print("Sensor doesn't contain any fingerprint data. Please run the 'enroll' example.");
+    }
+    else
+    {
+      Serial.println("Waiting for valid finger...");
+      Serial.print("Sensor contains ");
+      Serial.print(finger.templateCount);
+      Serial.println(" templates");
+    }
   }
-  else {
-    Serial.println("Waiting for valid finger...");
-      Serial.print("Sensor contains "); Serial.print(finger.templateCount); Serial.println(" templates");
-  }
- }
 }
 /* Function which Scans RFID Tags/Cards and Identify the User */
 
-void ScanRFID(){
+void ScanRFID()
+{
 
-    if ( ! mfrc522.PICC_IsNewCardPresent()) { //If a new PICC placed to RFID reader continue
-      return;
-    }
-    if ( ! mfrc522.PICC_ReadCardSerial()) {   //Since a PICC placed get Serial and continue
-      return;
-    }
+  if (!mfrc522.PICC_IsNewCardPresent())
+  { // If a new PICC placed to RFID reader continue
+    return;
+  }
+  if (!mfrc522.PICC_ReadCardSerial())
+  { // Since a PICC placed get Serial and continue
+    return;
+  }
 
-    String content= "";
-    user="";
-    for (byte i = 0; i < mfrc522.uid.size; i++) 
+  String content = "";
+  user = "";
+  for (byte i = 0; i < mfrc522.uid.size; i++)
+  {
+    content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+    content.concat(String(mfrc522.uid.uidByte[i], HEX));
+  }
+
+  content.toUpperCase();
+  mfrc522.PICC_HaltA(); // Stop reading
+
+  if (content.substring(1) == "B9 C7 3D 8D") // change here the UID of the card/cards that you want to give access
+  {
+    user = "user1";
+    ValidRFID.show();
+    GetDateTime();
+    DateTimeV.setText(RealT.c_str());
+    ValNM.setText("Welcome Aakash !");
+    delay(3000);
+    Finger.show();
+    DateTimeFH.setText(RealT.c_str());
+    delay(2000);
+    int fingerID = getFingerprintID();
+
+    if ((fingerID == 1) || (fingerID == 2) || (fingerID == 3) || (fingerID == 4))
     {
-      content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
-      content.concat(String(mfrc522.uid.uidByte[i], HEX));
+      ValidFinger.show();
+      DateTimeVF.setText(RealT.c_str());
+      delay(2000);
+      PinEnter.show();
+      DateTimeP.setText(RealT.c_str());
     }
-
-    content.toUpperCase();
-    mfrc522.PICC_HaltA(); // Stop reading
-
-    if (content.substring(1) == "B9 C7 3D 8D") //change here the UID of the card/cards that you want to give access
+    else
     {
-      user = "user1";
-      ValidRFID.show();
-      GetDateTime();
-      DateTimeV.setText(RealT.c_str());
-      ValNM.setText("Welcome Aakash !");
-      delay(3000);
-      Finger.show();
-      DateTimeFH.setText(RealT.c_str());
+      InvalidFinger.show();
+      DateTimeIF.setText(RealT.c_str());
       delay(2000);
-      int fingerID = getFingerprintID();
-      
-      if((fingerID == 1) || (fingerID == 2) || (fingerID == 3) || (fingerID == 4)){
-        ValidFinger.show();
-        DateTimeVF.setText(RealT.c_str());
-        delay(2000);
-        PinEnter.show();
-        DateTimeP.setText(RealT.c_str());
-      }else{
-        InvalidFinger.show();
-        DateTimeIF.setText(RealT.c_str());
-        delay(2000);
-        printNormalModeMessage();       
-      }
-    }
-    else if(content.substring(1) == "FE CB 37 5B"){
-      user = "user2";
-      ValidRFID.show();
-      GetDateTime();
-      DateTimeV.setText(RealT.c_str());
-      ValNM.setText("Welcome ravi !");
-      delay(3000);
-      Finger.show();
-      DateTimeFH.setText(RealT.c_str());
-      delay(2000);
-      int fingerID = getFingerprintID();
-      
-      if((fingerID == 5) || (fingerID == 6) || (fingerID == 7) || (fingerID == 8)){
-        ValidFinger.show();
-        DateTimeVF.setText(RealT.c_str());
-        delay(2000);
-        PinEnter.show();
-        DateTimeP.setText(RealT.c_str());
-      }else{
-        InvalidFinger.show();
-        DateTimeIF.setText(RealT.c_str());
-        delay(2000);
-        printNormalModeMessage();       
-      }
-    }
-    else {
-      InvalidRFID.show();
-      DateTimeI.setText(RealT.c_str());
-      InvalNM.setText("Access Denied !!");
-      delay(3000);
       printNormalModeMessage();
     }
+  }
+  else if (content.substring(1) == "FE CB 37 5B")
+  {
+    user = "user2";
+    ValidRFID.show();
+    GetDateTime();
+    DateTimeV.setText(RealT.c_str());
+    ValNM.setText("Welcome ravi !");
+    delay(3000);
+    Finger.show();
+    DateTimeFH.setText(RealT.c_str());
+    delay(2000);
+    int fingerID = getFingerprintID();
 
+    if ((fingerID == 5) || (fingerID == 6) || (fingerID == 7) || (fingerID == 8))
+    {
+      ValidFinger.show();
+      DateTimeVF.setText(RealT.c_str());
+      delay(2000);
+      PinEnter.show();
+      DateTimeP.setText(RealT.c_str());
+    }
+    else
+    {
+      InvalidFinger.show();
+      DateTimeIF.setText(RealT.c_str());
+      delay(2000);
+      printNormalModeMessage();
+    }
+  }
+  else
+  {
+    InvalidRFID.show();
+    DateTimeI.setText(RealT.c_str());
+    InvalNM.setText("Access Denied !!");
+    delay(3000);
+    printNormalModeMessage();
+  }
 }
 
 // This function is for Display default initial screen
 
-void printNormalModeMessage() {
+void printNormalModeMessage()
+{
   Home.show();
   DateTimeH.setText(RealT.c_str());
   delay(150);
 }
 
-
 //********************Get the Fingerprint ID******************
-int getFingerprintID() {
-  checkAgain:
+int getFingerprintID()
+{
+checkAgain:
   uint8_t p = finger.getImage();
-  switch (p) {
-    case FINGERPRINT_OK:
-      //Serial.println("Image taken");
-      GetDateTime();
-      FingerScan.show();
-      DateTimeFS.setText(RealT.c_str());
-      break;
-    case FINGERPRINT_NOFINGER:
-      //Serial.println("No finger detected");
-      goto checkAgain;
-      return 0;
-    case FINGERPRINT_PACKETRECIEVEERR:
-      //Serial.println("Communication error");
-      return -2;
-    case FINGERPRINT_IMAGEFAIL:
-      //Serial.println("Imaging error");
-      return -2;
-    default:
-      //Serial.println("Unknown error");
-      return -2;
+  switch (p)
+  {
+  case FINGERPRINT_OK:
+    // Serial.println("Image taken");
+    GetDateTime();
+    FingerScan.show();
+    DateTimeFS.setText(RealT.c_str());
+    break;
+  case FINGERPRINT_NOFINGER:
+    // Serial.println("No finger detected");
+    goto checkAgain;
+    return 0;
+  case FINGERPRINT_PACKETRECIEVEERR:
+    // Serial.println("Communication error");
+    return -2;
+  case FINGERPRINT_IMAGEFAIL:
+    // Serial.println("Imaging error");
+    return -2;
+  default:
+    // Serial.println("Unknown error");
+    return -2;
   }
   // OK success!
   p = finger.image2Tz();
-  switch (p) {
-    case FINGERPRINT_OK:
-      //Serial.println("Image converted");
-      break;
-    case FINGERPRINT_IMAGEMESS:
-      //Serial.println("Image too messy");
-      return -1;
-    case FINGERPRINT_PACKETRECIEVEERR:
-      //Serial.println("Communication error");
-      return -2;
-    case FINGERPRINT_FEATUREFAIL:
-      //Serial.println("Could not find fingerprint features");
-      return -2;
-    case FINGERPRINT_INVALIDIMAGE:
-      //Serial.println("Could not find fingerprint features");
-      return -2;
-    default:
-      //Serial.println("Unknown error");
-      return -2;
+  switch (p)
+  {
+  case FINGERPRINT_OK:
+    // Serial.println("Image converted");
+    break;
+  case FINGERPRINT_IMAGEMESS:
+    // Serial.println("Image too messy");
+    return -1;
+  case FINGERPRINT_PACKETRECIEVEERR:
+    // Serial.println("Communication error");
+    return -2;
+  case FINGERPRINT_FEATUREFAIL:
+    // Serial.println("Could not find fingerprint features");
+    return -2;
+  case FINGERPRINT_INVALIDIMAGE:
+    // Serial.println("Could not find fingerprint features");
+    return -2;
+  default:
+    // Serial.println("Unknown error");
+    return -2;
   }
   // OK converted!
   p = finger.fingerFastSearch();
-  if (p == FINGERPRINT_OK) {
-    //Serial.println("Found a print match!");
-  } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
-    //Serial.println("Communication error");
+  if (p == FINGERPRINT_OK)
+  {
+    // Serial.println("Found a print match!");
+  }
+  else if (p == FINGERPRINT_PACKETRECIEVEERR)
+  {
+    // Serial.println("Communication error");
     return -2;
-  } else if (p == FINGERPRINT_NOTFOUND) {
-    //Serial.println("Did not find a match");
+  }
+  else if (p == FINGERPRINT_NOTFOUND)
+  {
+    // Serial.println("Did not find a match");
     return -1;
-  } else {
-    //Serial.println("Unknown error");
+  }
+  else
+  {
+    // Serial.println("Unknown error");
     return -2;
-  }   
+  }
   // found a match!
-  Serial.print("Found ID #"); Serial.print(finger.fingerID); 
-  Serial.print(" with confidence of "); Serial.println(finger.confidence); 
- 
+  Serial.print("Found ID #");
+  Serial.print(finger.fingerID);
+  Serial.print(" with confidence of ");
+  Serial.println(finger.confidence);
+
   return finger.fingerID;
 }
 
 // Connect to Wi-Fi
-void connectWifi(){
+void connectWifi()
+{
   // Connect to Wi-Fi
   Serial.print("Connecting to ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+  client.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     Serial.print(".");
   }
 }
 
-//Init NTPclient to get time
-void initNTP(){
+// Init NTPclient to get time
+void initNTP()
+{
   // Initialize a NTPClient to get time
   timeClient.begin();
   // Set offset time in seconds to adjust for your timezone, for example:
@@ -587,33 +629,35 @@ void initNTP(){
 
 /* Function which sets current date time */
 
-void GetDateTime(){
+void GetDateTime()
+{
   timeClient.update();
 
   unsigned long epochTime = timeClient.getEpochTime();
-  
+
   String formattedTime = timeClient.getFormattedTime();
 
   String weekDay = weekDays[timeClient.getDay()];
 
-  //Get a time structure
-  struct tm *ptm = gmtime ((time_t *)&epochTime); 
+  // Get a time structure
+  struct tm *ptm = gmtime((time_t *)&epochTime);
 
   int monthDay = ptm->tm_mday;
 
-  int currentMonth = ptm->tm_mon+1;
+  int currentMonth = ptm->tm_mon + 1;
 
-  String currentMonthName = months[currentMonth-1];
+  String currentMonthName = months[currentMonth - 1];
 
-  int currentYear = ptm->tm_year+1900;
+  int currentYear = ptm->tm_year + 1900;
 
   RealT = weekDay + " " + currentMonthName + " " + String(monthDay) + " " + formattedTime + " " + String(currentYear);
 
-  //Serial.println(RealT);
+  // Serial.println(RealT);
   delay(1000);
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   Serial.println("IoT based Smart Lock V2.0");
   delay(1000);
@@ -626,9 +670,9 @@ void setup() {
   Serial.println("Fetching Time");
   initNTP();
   delay(250);
- 
-  pinMode(LockerPin, OUTPUT);           // Seting Relay PIN as Output
-  digitalWrite(LockerPin, HIGH);        // Relay PIN is active LOW
+
+  pinMode(LockerPin, OUTPUT);    // Seting Relay PIN as Output
+  digitalWrite(LockerPin, HIGH); // Relay PIN is active LOW
 
   Serial.println("Setting up RFID");
   initRFID();
@@ -655,11 +699,12 @@ void setup() {
   delay(1000);
 }
 
-void loop() {
-    /*
-     * When a pop or push event occured every time, 
-     * the corresponding component[right page id and component id] in touch event list will be asked.
-     */
+void loop()
+{
+  /*
+   * When a pop or push event occured every time,
+   * the corresponding component[right page id and component id] in touch event list will be asked.
+   */
   nexLoop(nex_listen_list);
   ScanRFID();
 }

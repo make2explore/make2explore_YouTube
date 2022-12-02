@@ -46,7 +46,9 @@ const char* password = "XXXXXXX";
 
 WiFiClientSecure client;
 UniversalTelegramBot bot(BOTtoken, client);
-client.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
+// 
+// client.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
+// Adding root certificate in Setup()
 
 //Checks for new messages every 1 second.
 int botRequestDelay = 1000;
@@ -234,6 +236,7 @@ void setup() {
   // Connect to Wi-Fi
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
+  client.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting to WiFi..");

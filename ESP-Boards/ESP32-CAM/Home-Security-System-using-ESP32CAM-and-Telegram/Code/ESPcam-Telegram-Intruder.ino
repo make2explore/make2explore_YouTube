@@ -7,6 +7,12 @@
 // Hardware          - Ai Thinker ESP32 CAM, MQ6 Sensor, Flame Sensor, AM312 PIR Sensor               
 // Sensors Used      - MQ6 LPG/Gas/Smoke Sensor, Flame Sensor, AM312 PIR Sensor
 // Source Repo       - github.com/make2explore
+
+// -- Latest Testing on  - 01/09/22  ✅
+//    - With Following Environments
+//    - ESP32 Core Version : 2.0.1
+//    - Universal Telegram Bot library  v. 1.3.0
+//    - ArduinoJson Library v. 6.15.2
 // -------------------------------------------------------------------------------------------------------//
 
 #include <WiFi.h>
@@ -34,7 +40,9 @@ bool sendPhoto = false;
 WiFiClientSecure clientTCP;
 
 UniversalTelegramBot bot(BOTtoken, clientTCP);
-secured_client.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
+// 
+// clientTCP.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
+// Adding root certificate in Setup()
 
 //CAMERA_MODEL_AI_THINKER
 #define PWDN_GPIO_NUM     32
@@ -111,7 +119,9 @@ void setup(){
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
-  WiFi.begin(ssid, password);  
+  clientTCP.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
+  WiFi.begin(ssid, password);
+    
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(500);
